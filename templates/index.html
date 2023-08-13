@@ -41,27 +41,60 @@
         text-align: center;
       }
     </style>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"
+      integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA=="
+      crossorigin="anonymous"
+    ></script>
     <script>
+      var socket = io()
       let chordType = null
       let chordRoot = null
       function setDominantType(el) {
-        document.getElementById("answer").innerHTML = el.innerHTML
+        document.getElementById("user-answer").innerHTML = el.innerHTML
         chordType = el.id
         console.log(chordType)
       }
       function setDominantRoot(el) {
-        chordRoot = el.id
+        chordRoot = el.id.substr(4)
         console.log(chordType)
         console.log(chordRoot)
-        if (document.getElementById("answer").innerHTML != "") {
+
+        if (document.getElementById("user-answer").innerHTML != "") {
           const span = document
-            .getElementById("answer")
+            .getElementById("user-answer")
             .getElementsByClassName("root-note")[0]
           span.innerHTML = el.innerHTML
         } else {
-          document.getElementById("answer").innerHTML = el.innerHTML
+          document.getElementById("user-answer").innerHTML = el.innerHTML
         }
       }
+      function answer() {
+        socket.emit("answer", { chordType, chordRoot })
+      }
+      function play() {
+        socket.emit("play")
+      }
+      function returnAnswer(data) {
+        console.log(data)
+        document.getElementById("correct-answer").innerHTML =
+          document.getElementById(data["chord_type"]).innerHTML
+        const span = document
+          .getElementById("correct-answer")
+          .getElementsByClassName("root-note")[0]
+        span.innerHTML = document.getElementById(data["chord_root"]).innerHTML
+        document.getElementById("next").style.display = "block"
+        document.getElementById("correct").style.display = "block"
+      }
+      function next() {
+        socket.emit("next")
+        document.getElementById("correct").style.display = "none"
+        document.getElementById("next").style.display = "none"
+        document.getElementById("user-answer").innerHTML = ""
+      }
+      socket.on("answer_returned", function (data) {
+        returnAnswer(data)
+      })
       window.onload = function () {
         for (let x of document.getElementsByClassName("dominant-type")) {
           x.onclick = function () {
@@ -73,6 +106,10 @@
             setDominantRoot(x)
           }
         }
+        document.getElementById("confirm").onclick = answer
+        document.getElementById("play").onclick = play
+        document.getElementById("next").onclick = next
+        document.getElementById("correct").style.display = "none"
       }
     </script>
   </head>
@@ -81,7 +118,7 @@
       <div class="row">
         <div class="col">
           <h1>Rozpoznaj dominantę</h1>
-          <button class="btn btn-warning">Odtwórz</button>
+          <button class="btn btn-warning" id="play">Odtwórz</button>
           <h3>Wybierz rodzaj dominanty:</h3>
           <div>
             <button class="btn btn-primary dominant-type" id="D7">
@@ -215,10 +252,19 @@
           <h3>Twoja odpowiedź:</h3>
           <div class="card" style="width: 100px">
             <div class="card-body">
-              <div id="answer"></div>
+              <div id="user-answer"></div>
             </div>
           </div>
-          <button class="btn btn-success">Zatwierdź</button>
+          <button class="btn btn-success" id="confirm">Zatwierdź</button>
+          <div id="correct">
+            <h3>Prawidłowa odpowiedź:</h3>
+            <div class="card" style="width: 100px">
+              <div class="card-body">
+                <div id="correct-answer"></div>
+              </div>
+            </div>
+          </div>
+          <button class="btn btn-success" id="next">Dalej</button>
         </div>
       </div>
     </div>

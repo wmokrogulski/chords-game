@@ -1,3 +1,4 @@
 flask
 musicpy
 uvicorn
+flask-socketio
