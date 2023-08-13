@@ -76,7 +76,7 @@ def create_chopin_chord():
     else:
         chord+=root_note+20
     
-    answer=f'D7{chord_type}-1/{root}'
+    answer=f'D7{chord_type}-5/{root}'
     return chord, answer
 
 def random_dominant():
