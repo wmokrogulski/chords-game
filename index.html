@@ -42,10 +42,17 @@
       }
     </style>
     <script>
+      let chordType = null
+      let chordRoot = null
       function setDominantType(el) {
         document.getElementById("answer").innerHTML = el.innerHTML
+        chordType = el.id
+        console.log(chordType)
       }
       function setDominantRoot(el) {
+        chordRoot = el.id
+        console.log(chordType)
+        console.log(chordRoot)
         if (document.getElementById("answer").innerHTML != "") {
           const span = document
             .getElementById("answer")
@@ -74,6 +81,7 @@
       <div class="row">
         <div class="col">
           <h1>Rozpoznaj dominantę</h1>
+          <button class="btn btn-warning">Odtwórz</button>
           <h3>Wybierz rodzaj dominanty:</h3>
           <div>
             <button class="btn btn-primary dominant-type" id="D7">
