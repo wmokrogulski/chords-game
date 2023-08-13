@@ -66,8 +66,27 @@ def create_dominant7omit1():
     answer=f'D{chord_type}-1/{root}'
     return chord, answer
 
+def create_chopin_chord():
+    root_note=musicpy.degree_to_note(randint(48,67))
+    chord=root_note+(root_note+10)+(root_note+16)
+    root='1'
+    chord_type=choice(('6','6>'))
+    if chord_type=='6':
+        chord+=root_note+21
+    else:
+        chord+=root_note+20
+    
+    answer=f'D7{chord_type}-1/{root}'
+    return chord, answer
+
 def random_dominant():
-  chord, answer=choice((create_dominant7(),create_dominant9(),create_dominant9omit1(),create_dominant7omit1()))
+  chord, answer=choice((
+      create_dominant7(),
+      create_dominant9(),
+      create_dominant9omit1(),
+      create_dominant7omit1(),
+      create_chopin_chord(),
+  ))
   return chord,answer
 
 
