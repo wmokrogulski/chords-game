@@ -94,6 +94,7 @@
         document.getElementById("correct").style.display = "none"
         document.getElementById("next").style.display = "none"
         document.getElementById("user-answer").innerHTML = ""
+        document.getElementById("sound").removeAttribute("src")
       }
       socket.on("answer_returned", function (data) {
         returnAnswer(data)
