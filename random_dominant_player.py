@@ -87,7 +87,7 @@ def random_dominant():
   ))
   return chord,answer
 
-def get_dominant_answer(data):
+def get_dominant_answer(data, answer):
     chord_type = dominant_names_dict.get(data['chordType'], data['chordType'])
 
     user_answer = f'{chord_type}/{data["chordRoot"]}'

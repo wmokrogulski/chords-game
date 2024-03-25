@@ -39,8 +39,9 @@ def handle_next():
 @socketio.on('answer')
 def handle_answer(data):
     global game
+    global answer
     if game=='dominants':
-        correct, chord_type, root = get_dominant_answer(data)
+        correct, chord_type, root = get_dominant_answer(data, answer)
         socketio.emit('answer_returned', {
                     'correct': correct, 'chord_type': chord_type, 'chord_root': root})
 
