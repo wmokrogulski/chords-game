@@ -1,6 +1,10 @@
 import musicpy
 from random import randint, choice, shuffle
 
+dominant_names_dict = {'D7no1': 'D7-1', 'D9b': 'D9>', 'D9no1': 'D9-1',
+              'D9bno1': 'D9>-1', 'D6': 'D76-5', 'D6b': 'D76>-5'}
+rev_dom_names_dict = {v: k for k, v in dominant_names_dict.items()}
+
 
 
 def create_dominant7():
@@ -88,6 +92,19 @@ def random_dominant():
       create_chopin_chord(),
   ))
   return chord,answer
+
+def get_dominant_answer(data):
+    chord_type = dominant_names_dict.get(data['chordType'], data['chordType'])
+
+    user_answer = f'{chord_type}/{data["chordRoot"]}'
+    chord_type, root = answer.split('/')
+    chord_type = rev_dom_names_dict.get(chord_type, chord_type)
+    root = f'root{root}'
+
+    print(answer, user_answer)
+
+    correct = answer == user_answer
+    return correct, chord_type, root 
 
 
 if __name__ == '__main__':

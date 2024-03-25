@@ -5,8 +5,8 @@ from random import randint, choice
 
 def create_random_chord():
     root_note=musicpy.degree_to_note(randint(48,72))
-    chord_type=choice(['maj','min','dim','aug','maj7','min7','7'])
-    inversion=randint(0,0 if chord_type=='aug' else 3 if '7' in chord_type else 2)
+    chord_type=choice(['maj','min'])
+    inversion=randint(0, 2)
     chord=musicpy.get_chord(root_note, chord_type)
     if inversion!=0:
         chord/=inversion
@@ -28,4 +28,4 @@ if __name__ == '__main__':
         else:
             piece|=chord
 
-    musicpy.play(piece, wait=True, bpm=60)
+    musicpy.play(piece, wait=True, bpm=40)
