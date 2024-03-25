@@ -2,3 +2,5 @@ flask
 musicpy
 uvicorn
 flask-socketio
+pydub
+sf2_loader
