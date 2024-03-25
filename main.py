@@ -1,6 +1,7 @@
 from flask import Flask, render_template
 from flask_socketio import SocketIO
 from random_dominant_player import random_dominant, get_dominant_answer
+from sound_exporter import export_sound
 import musicpy
 
 app = Flask(__name__)
@@ -27,7 +28,8 @@ def handle_play():
     if answer is None:
         if game=='dominants':
             chord, answer = random_dominant()
-    musicpy.play(chord, wait=True, bpm=60)
+    audio_b64=export_sound(chord)
+    socketio.emit('play_returned',{'audio_b64':audio_b64})
 
 
 @socketio.on('next')

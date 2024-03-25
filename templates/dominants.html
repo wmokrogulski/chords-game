@@ -73,7 +73,10 @@
         socket.emit("answer", { chordType, chordRoot })
       }
       function play() {
-        socket.emit("play")
+        if (!document.getElementById("sound").src) {
+          socket.emit("play")
+        }
+        document.getElementById("sound").play()
       }
       function returnAnswer(data) {
         console.log(data)
@@ -94,6 +97,9 @@
       }
       socket.on("answer_returned", function (data) {
         returnAnswer(data)
+      })
+      socket.on("play_returned", function (data) {
+        document.getElementById("sound").src = data["audio_b64"]
       })
       window.onload = function () {
         for (let x of document.getElementsByClassName("dominant-type")) {
@@ -119,6 +125,9 @@
         <div class="col">
           <h1>Rozpoznaj dominantę</h1>
           <button class="btn btn-warning" id="play">Odtwórz</button>
+          <audio id="sound">
+            The audio tag is not supported by your browser.
+          </audio>
           <h3>Wybierz rodzaj dominanty:</h3>
           <div>
             <button class="btn btn-primary dominant-type" id="D7">
