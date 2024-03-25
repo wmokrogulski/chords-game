@@ -43,10 +43,7 @@ def create_dominant9omit1():
     root_note=musicpy.degree_to_note(randint(48,67))
     chord_type=choice(('dim7','m7b5'))
     chord=musicpy.get_chord(root_note,chord_type)
-    notes=[1,2,3,4]
-    shuffle(notes)
-    chord.sort(notes)
-    root=str((1,3,5,7,9)[notes[0]])
+    root='3'
     if chord_type=='dim7':
         chord_type='9>'
         if root=='9':
@@ -61,10 +58,7 @@ def create_dominant7omit1():
     root_note=musicpy.degree_to_note(randint(48,67))
     chord_type='dim'
     chord=musicpy.get_chord(root_note,chord_type)
-    notes=[1,2,3]
-    shuffle(notes)
-    chord.sort(notes)
-    root=str((1,3,5,7)[notes[0]])
+    root='3'
     chord_type='7'
     
     answer=f'D{chord_type}-1/{root}'
