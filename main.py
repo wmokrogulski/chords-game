@@ -20,6 +20,11 @@ def dominants():
     game='dominants'
     return render_template("dominants.html")
 
+@app.route("/dissonant/")
+def dissonant():
+    global game
+    game='dissonant'
+    return render_template("dissonant.html")
 
 @socketio.on('play')
 def handle_play():

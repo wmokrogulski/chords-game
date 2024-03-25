@@ -10,7 +10,7 @@ def create_random_chord():
     chord=musicpy.get_chord(root_note, chord_type)
     if inversion!=0:
         chord/=inversion
-    return chord, root_note.base_name, chord_type, chord[0].base_name
+    return chord, root_note.name, chord_type, chord[0].name
 
 if __name__ == '__main__':
     
