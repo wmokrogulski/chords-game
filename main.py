@@ -1,6 +1,7 @@
 from flask import Flask, render_template
 from flask_socketio import SocketIO
 from random_dominant_player import random_dominant, get_dominant_answer
+from random_dissonant_player import create_random_dissonant
 from sound_exporter import export_sound
 import musicpy
 
@@ -33,6 +34,8 @@ def handle_play():
     if answer is None:
         if game=='dominants':
             chord, answer = random_dominant()
+        if game == 'dissonant':
+            chord, answer = create_random_dissonant()
     audio_b64=export_sound(chord)
     socketio.emit('play_returned',{'audio_b64':audio_b64})
 
@@ -49,6 +52,10 @@ def handle_answer(data):
     global answer
     if game=='dominants':
         correct, chord_type, root = get_dominant_answer(data, answer)
+        socketio.emit('answer_returned', {
+                    'correct': correct, 'chord_type': chord_type, 'chord_root': root})
+    if game=='dissonant':
+        correct, chord_type, root = get_dissonant_answer(data, answer)
         socketio.emit('answer_returned', {
                     'correct': correct, 'chord_type': chord_type, 'chord_root': root})
 
