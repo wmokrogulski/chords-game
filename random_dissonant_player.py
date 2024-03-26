@@ -2,6 +2,7 @@ import musicpy
 from random import randint, choice
 
 CHORD_TYPES=['7','maj7','min7', 'minmaj7','maj6','min6', 'majmin6', 'minmaj6', '9no1','min9no1']
+CHORD_MODES=['maj','maj','min','min','maj','min','maj', 'min', 'maj', 'maj']
 
 def create_random_dissonant(root_note=None, chord_type=None):
     root_note= musicpy.degree_to_note(randint(48,72)) if root_note is None else root_note
@@ -33,12 +34,33 @@ def create_random_dissonant(root_note=None, chord_type=None):
 
 def get_dissonant_answer(data, answer):
     print(data)
-    user_answer=answer
+    root=data["chordRootName"]
+    chord_mode=data["chordMode"]
+    chord_type=data["chordType"]
+    if (chord_mode is None or chord_mode=='maj') and chord_type not in ('maj6','min6'):
+        user_answer=f'{root}{chord_type}'
+    elif chord_mode=='maj' and chord_type=='maj6':
+        user_answer=f'{root}{chord_type}'
+    elif chord_mode=='min' and chord_type=='min6':
+        user_answer=f'{root}{chord_type}'
+    else:
+        user_answer=f'{root}{chord_mode}{chord_type}'
 
     print(answer, user_answer)
 
     correct = answer == user_answer
-    return correct#, chord_type, root 
+    for ct in CHORD_TYPES:
+        if ct in answer:
+            chord_type=ct
+    root=answer[:answer.index(chord_type)]
+    chord_mode=CHORD_MODES[CHORD_TYPES.index(chord_type)]
+    if chord_type=='min7':
+        chord_type='7'
+    if chord_type in ('minmaj6'):
+        chord_type='maj6'
+    if chord_type=='majmin6':
+        chord_type='min6'
+    return correct, root, chord_mode, chord_type 
 
 if __name__ == '__main__':
 
