@@ -13,7 +13,7 @@
 
     <!-- Latest compiled JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
-    <title>Rozpoznaj dominantę</title>
+    <title>Rozpoznaj akord</title>
     <style>
       .strikethrough {
         position: relative;
@@ -34,7 +34,7 @@
         transform: rotate(45deg);
       }
 
-      .dominant {
+      .chord {
         font-size: 3em;
       }
       .root-note {
@@ -49,24 +49,56 @@
     <script>
       var socket = io()
       let chordType = null
-      function setDominantType(el) {
-        document.getElementById("user-answer").innerHTML = el.innerHTML
+      function setChordType(el) {
+        if (document.getElementById("user-answer").innerHTML != "") {
+          let chordRoot = document
+            .getElementById("user-answer")
+            .getElementsByClassName("chord")[0].innerHTML
+          document.getElementById("user-answer").innerHTML = el.innerHTML
+          const span = document
+            .getElementById("user-answer")
+            .getElementsByClassName("chord")[0]
+          span.innerHTML = chordRoot
+        } else {
+          document.getElementById("user-answer").innerHTML = el.innerHTML
+        }
         chordType = el.id
         console.log(chordType)
       }
-      function setDominantRoot(el) {
-        chordRoot = el.id.substr(4)
+      function setChordMode(el) {
+        chordMode = el.id
+        setChordModeFun()
+      }
+      function setChordModeFun() {
+        console.log(chordMode)
+        if (chordMode == "min") {
+          const span = document
+            .getElementById("user-answer")
+            .getElementsByClassName("chord")[0]
+          span.innerHTML =
+            span.innerHTML[0].toLowerCase() + span.innerHTML.slice(1)
+        } else {
+          const span = document
+            .getElementById("user-answer")
+            .getElementsByClassName("chord")[0]
+          span.innerHTML =
+            span.innerHTML[0].toUpperCase() + span.innerHTML.slice(1)
+        }
+      }
+      function setChordRoot(el) {
+        chordRoot = el.children[0].innerHTML
         console.log(chordType)
         console.log(chordRoot)
 
         if (document.getElementById("user-answer").innerHTML != "") {
           const span = document
             .getElementById("user-answer")
-            .getElementsByClassName("root-note")[0]
-          span.innerHTML = el.innerHTML
+            .getElementsByClassName("chord")[0]
+          span.innerHTML = el.children[0].innerHTML
         } else {
           document.getElementById("user-answer").innerHTML = el.innerHTML
         }
+        setChordModeFun()
       }
       function answer() {
         socket.emit("answer", { chordType, chordRoot })
@@ -102,14 +134,19 @@
         document.getElementById("sound").src = data["audio_b64"]
       })
       window.onload = function () {
-        for (let x of document.getElementsByClassName("dominant-type")) {
+        for (let x of document.getElementsByClassName("chord-type")) {
           x.onclick = function () {
-            setDominantType(x)
+            setChordType(x)
           }
         }
-        for (let x of document.getElementsByClassName("root")) {
+        for (let x of document.getElementsByClassName("chord-mode")) {
           x.onclick = function () {
-            setDominantRoot(x)
+            setChordMode(x)
+          }
+        }
+        for (let x of document.getElementsByClassName("chord-root")) {
+          x.onclick = function () {
+            setChordRoot(x)
           }
         }
         document.getElementById("confirm").onclick = answer
@@ -129,101 +166,118 @@
             The audio tag is not supported by your browser.
           </audio>
           <h3>Wybierz prymę akordu</h3>
-          <button class="btn btn-primary" id="C">C</button>
-          <button class="btn btn-primary" id="Cs">Cis</button>
-          <button class="btn btn-primary" id="D">D</button>
-          <button class="btn btn-primary" id="Ds">Dis</button>
-          <button class="btn btn-primary" id="E">E</button>
-          <button class="btn btn-primary" id="F">F</button>
-          <button class="btn btn-primary" id="Fs">Fis</button>
-          <button class="btn btn-primary" id="G">G</button>
-          <button class="btn btn-primary" id="Gs">Gis</button>
-          <button class="btn btn-primary" id="A">A</button>
-          <button class="btn btn-primary" id="Bb">B</button>
-          <button class="btn btn-primary" id="B">H</button>
+          <div>
+            <button class="btn btn-primary chord-root" id="C">
+              <span class="chord">C</span>
+            </button>
+            <button class="btn btn-primary chord-root" id="Cs">
+              <span class="chord">Cis</span>
+            </button>
+            <button class="btn btn-primary chord-root" id="D">
+              <span class="chord">D</span>
+            </button>
+            <button class="btn btn-primary chord-root" id="Ds">
+              <span class="chord">Es</span>
+            </button>
+            <button class="btn btn-primary chord-root" id="E">
+              <span class="chord">E</span>
+            </button>
+            <button class="btn btn-primary chord-root" id="F">
+              <span class="chord">F</span>
+            </button>
+            <button class="btn btn-primary chord-root" id="Fs">
+              <span class="chord">Fis</span>
+            </button>
+            <button class="btn btn-primary chord-root" id="G">
+              <span class="chord">G</span>
+            </button>
+            <button class="btn btn-primary chord-root" id="Gs">
+              <span class="chord">As</span>
+            </button>
+            <button class="btn btn-primary chord-root" id="A">
+              <span class="chord">A</span>
+            </button>
+            <button class="btn btn-primary chord-root" id="Bb">
+              <span class="chord">B</span>
+            </button>
+            <button class="btn btn-primary chord-root" id="B">
+              <span class="chord">H</span>
+            </button>
+          </div>
+          <h3>Wybierz tryb akordu</h3>
+          <div>
+            <button class="btn btn-primary chord-mode" id="maj">
+              <span class="chord">dur</span>
+            </button>
+            <button class="btn btn-primary chord-mode" id="min">
+              <span class="chord">moll</span>
+            </button>
+          </div>
           <h3>Wybierz rodzaj dysonansu:</h3>
           <div>
-            <button class="btn btn-primary dominant-type" id="D7">
+            <button class="btn btn-primary chord-type" id="D7">
               <table>
                 <tr>
-                  <td rowspan="2"><span class="dominant"></span></td>
+                  <td rowspan="2"><span class="chord"></span></td>
                   <td>7</td>
                 </tr>
                 <tr>
                   <td>&nbsp</td>
                 </tr>
-                <tr>
-                  <td class="text-center"><span class="root-note"></span></td>
-                </tr>
               </table>
             </button>
-            <button class="btn btn-primary dominant-type" id="D7M">
+            <button class="btn btn-primary chord-type" id="D7M">
               <table>
                 <tr>
-                  <td rowspan="2"><span class="dominant"></span></td>
+                  <td rowspan="2"><span class="chord"></span></td>
                   <td>7&lt;</td>
                 </tr>
                 <tr>
                   <td>&nbsp</td>
                 </tr>
-                <tr>
-                  <td class="text-center"><span class="root-note"></span></td>
-                </tr>
               </table>
             </button>
-            <button class="btn btn-primary dominant-type" id="D6">
+            <button class="btn btn-primary chord-type" id="D6">
               <table>
                 <tr>
-                  <td rowspan="2"><span class="dominant"></span></td>
+                  <td rowspan="2"><span class="chord"></span></td>
                   <td>6</td>
                 </tr>
                 <tr>
                   <td>&nbsp</td>
                 </tr>
-                <tr>
-                  <td class="text-center"><span class="root-note"></span></td>
-                </tr>
               </table>
             </button>
-            <button class="btn btn-primary dominant-type" id="D6m">
+            <button class="btn btn-primary chord-type" id="D6m">
               <table>
                 <tr>
-                  <td rowspan="2"><span class="dominant"></span></td>
+                  <td rowspan="2"><span class="chord"></span></td>
                   <td>6&gt;</td>
                 </tr>
                 <tr>
                   <td>&nbsp</td>
                 </tr>
-                <tr>
-                  <td class="text-center"><span class="root-note"></span></td>
-                </tr>
               </table>
             </button>
-            <button class="btn btn-primary dominant-type" id="D9no1">
+            <button class="btn btn-primary chord-type" id="D9no1">
               <table>
                 <tr>
-                  <td rowspan="2"><span class="dominant"></span></td>
+                  <td rowspan="2"><span class="chord"></span></td>
                   <td>9</td>
                 </tr>
                 <tr>
                   <td><span class="strikethrough">1</span></td>
                 </tr>
-                <tr>
-                  <td class="text-center"><span class="root-note"></span></td>
-                </tr>
               </table>
             </button>
-            <button class="btn btn-primary dominant-type" id="D9bno1">
+            <button class="btn btn-primary chord-type" id="D9bno1">
               <table>
                 <tr>
-                  <td rowspan="2"><span class="dominant"></span></td>
+                  <td rowspan="2"><span class="chord"></span></td>
                   <td>9&gt;</td>
                 </tr>
                 <tr>
                   <td><span class="strikethrough">1</span></td>
-                </tr>
-                <tr>
-                  <td class="text-center"><span class="root-note"></span></td>
                 </tr>
               </table>
             </button>
