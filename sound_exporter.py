@@ -10,7 +10,7 @@ def export_sound(sound):
   new_song = daw(1, name='sound')
   new_song.load(0, 'MuseScore_General.sf3')
 
-  new_song.export(sound, channel_num=0, mode='wav',
+  new_song.export(sound, channel_num=0, bpm=40, mode='wav',
                   filename=filename)
 
   with open(filename, 'rb') as f:

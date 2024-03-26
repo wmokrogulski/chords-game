@@ -49,9 +49,7 @@
     <script>
       var socket = io()
       let chordRootName = null
-      let chordRootName = null
       let chordType = null
-      let chordMode = null
       let chordMode = null
       function setChordType(el) {
         if (document.getElementById("user-answer").innerHTML != "") {
@@ -194,6 +192,9 @@
         }
         document.getElementById("confirm").onclick = answer
         document.getElementById("play").onclick = play
+        document.getElementById("playA440").onclick = function () {
+          document.getElementById("A440").play()
+        }
         document.getElementById("next").onclick = next
         document.getElementById("correct").style.display = "none"
         document.getElementById("next").style.display = "none"
@@ -207,6 +208,10 @@
           <h1>Rozpoznaj akord</h1>
           <button class="btn btn-warning" id="play">Odtwórz</button>
           <audio id="sound">
+            The audio tag is not supported by your browser.
+          </audio>
+          <button class="btn btn-warning" id="playA440">Odtwórz A440</button>
+          <audio id="A440" src="{{url_for('static',filename='A440.wav')}}">
             The audio tag is not supported by your browser.
           </audio>
           <h3>Wybierz prymę akordu</h3>
