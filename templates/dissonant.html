@@ -48,7 +48,9 @@
     ></script>
     <script>
       var socket = io()
+      let chordRootName = null
       let chordType = null
+      let chordMode = null
       function setChordType(el) {
         if (document.getElementById("user-answer").innerHTML != "") {
           let chordRoot = document
@@ -86,7 +88,8 @@
         }
       }
       function setChordRoot(el) {
-        chordRoot = el.children[0].innerHTML
+        let chordRoot = el.children[0].innerHTML
+        chordRootName = el.id
         console.log(chordType)
         console.log(chordRoot)
 
@@ -101,7 +104,7 @@
         setChordModeFun()
       }
       function answer() {
-        socket.emit("answer", { chordType, chordRoot })
+        socket.emit("answer", { chordRootName, chordMode, chordType })
       }
       function play() {
         if (!document.getElementById("sound").src) {
@@ -111,12 +114,36 @@
       }
       function returnAnswer(data) {
         console.log(data)
-        document.getElementById("correct-answer").innerHTML =
-          document.getElementById(data["chord_type"]).innerHTML
-        const span = document
-          .getElementById("correct-answer")
-          .getElementsByClassName("root-note")[0]
-        span.innerHTML = document.getElementById(data["chord_root"]).innerHTML
+        chordRootName = data["chord_root"]
+        console.log(chordRootName)
+        chordType = data["chord_type"]
+        console.log(chordType)
+
+        if (document.getElementById("correct-answer").innerHTML != "") {
+          let chordRoot = document
+            .getElementById("correct-answer")
+            .getElementsByClassName("chord")[0].innerHTML
+          document.getElementById("correct-answer").innerHTML =
+            document.getElementById(chordType).innerHTML
+          const span = document
+            .getElementById("correct-answer")
+            .getElementsByClassName("chord")[0]
+          span.innerHTML = chordRoot
+        } else {
+          document.getElementById("correct-answer").innerHTML =
+            document.getElementById(chordType).innerHTML
+        }
+
+        if (document.getElementById("correct-answer").innerHTML != "") {
+          const span = document
+            .getElementById("correct-answer")
+            .getElementsByClassName("chord")[0]
+          span.innerHTML =
+            document.getElementById(chordRootName).children[0].innerHTML
+        } else {
+          document.getElementById("correct-answer").innerHTML =
+            document.getElementById(chordRootName).innerHTML
+        }
         document.getElementById("next").style.display = "block"
         document.getElementById("correct").style.display = "block"
       }
@@ -153,6 +180,7 @@
         document.getElementById("play").onclick = play
         document.getElementById("next").onclick = next
         document.getElementById("correct").style.display = "none"
+        document.getElementById("next").style.display = "none"
       }
     </script>
   </head>
@@ -170,13 +198,13 @@
             <button class="btn btn-primary chord-root" id="C">
               <span class="chord">C</span>
             </button>
-            <button class="btn btn-primary chord-root" id="Cs">
+            <button class="btn btn-primary chord-root" id="C#">
               <span class="chord">Cis</span>
             </button>
             <button class="btn btn-primary chord-root" id="D">
               <span class="chord">D</span>
             </button>
-            <button class="btn btn-primary chord-root" id="Ds">
+            <button class="btn btn-primary chord-root" id="Eb">
               <span class="chord">Es</span>
             </button>
             <button class="btn btn-primary chord-root" id="E">
@@ -185,13 +213,13 @@
             <button class="btn btn-primary chord-root" id="F">
               <span class="chord">F</span>
             </button>
-            <button class="btn btn-primary chord-root" id="Fs">
+            <button class="btn btn-primary chord-root" id="F#">
               <span class="chord">Fis</span>
             </button>
             <button class="btn btn-primary chord-root" id="G">
               <span class="chord">G</span>
             </button>
-            <button class="btn btn-primary chord-root" id="Gs">
+            <button class="btn btn-primary chord-root" id="Ab">
               <span class="chord">As</span>
             </button>
             <button class="btn btn-primary chord-root" id="A">
@@ -215,7 +243,7 @@
           </div>
           <h3>Wybierz rodzaj dysonansu:</h3>
           <div>
-            <button class="btn btn-primary chord-type" id="D7">
+            <button class="btn btn-primary chord-type" id="7">
               <table>
                 <tr>
                   <td rowspan="2"><span class="chord"></span></td>
@@ -226,7 +254,7 @@
                 </tr>
               </table>
             </button>
-            <button class="btn btn-primary chord-type" id="D7M">
+            <button class="btn btn-primary chord-type" id="maj7">
               <table>
                 <tr>
                   <td rowspan="2"><span class="chord"></span></td>
@@ -237,7 +265,7 @@
                 </tr>
               </table>
             </button>
-            <button class="btn btn-primary chord-type" id="D6">
+            <button class="btn btn-primary chord-type" id="maj6">
               <table>
                 <tr>
                   <td rowspan="2"><span class="chord"></span></td>
@@ -248,7 +276,7 @@
                 </tr>
               </table>
             </button>
-            <button class="btn btn-primary chord-type" id="D6m">
+            <button class="btn btn-primary chord-type" id="min6">
               <table>
                 <tr>
                   <td rowspan="2"><span class="chord"></span></td>
@@ -259,7 +287,7 @@
                 </tr>
               </table>
             </button>
-            <button class="btn btn-primary chord-type" id="D9no1">
+            <button class="btn btn-primary chord-type" id="9no1">
               <table>
                 <tr>
                   <td rowspan="2"><span class="chord"></span></td>
@@ -270,7 +298,7 @@
                 </tr>
               </table>
             </button>
-            <button class="btn btn-primary chord-type" id="D9bno1">
+            <button class="btn btn-primary chord-type" id="min9no1">
               <table>
                 <tr>
                   <td rowspan="2"><span class="chord"></span></td>
