@@ -1,6 +1,6 @@
 flask
 musicpy
-uvicorn
+gunicorn
 flask-socketio
 pydub
 sf2_loader

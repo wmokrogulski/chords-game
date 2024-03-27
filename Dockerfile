@@ -6,6 +6,7 @@ WORKDIR /app
 RUN apt-get update
 RUN apt-get install -y fluidsynth
 RUN apt-get install -y ffmpeg libavcodec-extra
+RUN apt-get install -y pulseaudio jackd2 alsa-utils dbus-x11
 # CMD ["uname", "-a"]
 
 # install dependencies
@@ -16,4 +17,4 @@ RUN pip install --no-cache-dir --upgrade -r requirements.txt
 COPY . /app
 
 # start the server
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "80"]
+CMD ["gunicorn", "main:app", "-w", "4"]
