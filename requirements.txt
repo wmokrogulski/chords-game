@@ -4,3 +4,4 @@ gunicorn
 flask-socketio
 pydub
 sf2_loader
+gevent

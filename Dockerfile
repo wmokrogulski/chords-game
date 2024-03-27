@@ -1,4 +1,4 @@
-FROM python:3.10-slim-bookworm
+FROM python:3.10
 
 # set the working directory
 WORKDIR /app
@@ -17,4 +17,4 @@ RUN pip install --no-cache-dir --upgrade -r requirements.txt
 COPY . /app
 
 # start the server
-CMD ["gunicorn", "main:app", "-w", "4"]
+CMD ["gunicorn", "-k", "gevent", "-w", "1", "main:app"]
