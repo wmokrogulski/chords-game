@@ -2,6 +2,7 @@ from musicpy import *
 from musicpy.daw import *
 import base64
 from random import choice
+import os
 
 
 def export_sound(sound):
@@ -15,6 +16,7 @@ def export_sound(sound):
 
   with open(filename, 'rb') as f:
       text = base64.b64encode(f.read())
+  os.remove(filename)
   b64 = text.decode()
   audio_b64 = f'data:audio/mp3;base64,{b64}'
   return audio_b64
