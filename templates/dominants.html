@@ -53,12 +53,12 @@
       function setDominantType(el) {
         document.getElementById("user-answer").innerHTML = el.innerHTML
         chordType = el.id
-        console.log(chordType)
+        console.debug(chordType)
       }
       function setDominantRoot(el) {
         chordRoot = el.id.substr(4)
-        console.log(chordType)
-        console.log(chordRoot)
+        console.debug(chordType)
+        console.debug(chordRoot)
 
         if (document.getElementById("user-answer").innerHTML != "") {
           const span = document
@@ -79,7 +79,7 @@
         document.getElementById("sound").play()
       }
       function returnAnswer(data) {
-        console.log(data)
+        console.debug(data)
         document.getElementById("correct-answer").innerHTML =
           document.getElementById(data["chord_type"]).innerHTML
         const span = document

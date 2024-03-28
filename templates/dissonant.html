@@ -66,14 +66,14 @@
           document.getElementById("user-answer").innerHTML = el.innerHTML
         }
         chordType = el.id
-        console.log(chordType)
+        console.debug(chordType)
       }
       function setChordMode(el) {
         chordMode = el.id
         setChordModeFun()
       }
       function setChordModeFun() {
-        console.log(chordMode)
+        console.debug(chordMode)
         if (chordMode == "min") {
           const span = document
             .getElementById("user-answer")
@@ -91,8 +91,8 @@
       function setChordRoot(el) {
         let chordRoot = el.children[0].innerHTML
         chordRootName = el.id
-        console.log(chordType)
-        console.log(chordRoot)
+        console.debug(chordType)
+        console.debug(chordRoot)
 
         if (document.getElementById("user-answer").innerHTML != "") {
           const span = document
@@ -114,13 +114,13 @@
         document.getElementById("sound").play()
       }
       function returnAnswer(data) {
-        console.log(data)
+        console.debug(data)
         correct = data["correct"]
         tries = data["tries"]
         chordRootName = data["chord_root"]
-        console.log(chordRootName)
+        console.debug(chordRootName)
         chordType = data["chord_type"]
-        console.log(chordType)
+        console.debug(chordType)
         if (correct) {
           clearAnswerColor()
           document
@@ -158,7 +158,7 @@
             document.getElementById("correct-answer").innerHTML =
               document.getElementById(chordRootName).innerHTML
           }
-          console.log(chordMode)
+          console.debug(chordMode)
           if (chordMode == "min") {
             const span = document
               .getElementById("correct-answer")
