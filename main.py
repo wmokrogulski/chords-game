@@ -12,6 +12,13 @@ answer = None
 chord = None
 game = None
 
+MAX_TRIES=3
+DEFAULT_TOTAL=10
+
+tries = 0
+total = DEFAULT_TOTAL
+current = 0
+points = 0
 
 
 
@@ -24,6 +31,12 @@ def dominants():
 @app.route("/dissonant/")
 def dissonant():
     global game
+    global current
+    global points
+    global tries
+    current=1
+    points=0
+    tries=0
     game='dissonant'
     return render_template("dissonant.html")
 
@@ -44,19 +57,33 @@ def handle_play():
 @socketio.on('next')
 def handle_next():
     global answer
+    global current
+    global tries
     answer = None
+    current += 1
+    tries = 0
 
 
 @socketio.on('answer')
 def handle_answer(data):
     global game
     global answer
+    global tries
+    global points
     if game=='dominants':
         correct, chord_type, root = get_dominant_answer(data, answer)
+        if correct:
+            points+=1
+        else:
+            tries+=1
         socketio.emit('answer_returned', {
                     'correct': correct, 'chord_type': chord_type, 'chord_root': root})
     if game=='dissonant':
         correct, root, chord_mode, chord_type = get_dissonant_answer(data, answer)
+        if correct:
+            points+=1
+        else:
+            tries+=1
         socketio.emit('answer_returned', {'correct': correct,  'chord_root': root, 'chord_mode':chord_mode,'chord_type': chord_type})
 
 

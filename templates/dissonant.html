@@ -46,7 +46,7 @@
       integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA=="
       crossorigin="anonymous"
     ></script>
-    <script>
+    <script crossorigin="anonymous">
       var socket = io()
       let chordRootName = null
       let chordType = null
@@ -114,10 +114,20 @@
       }
       function returnAnswer(data) {
         console.log(data)
+        correct = data["correct"]
         chordRootName = data["chord_root"]
         console.log(chordRootName)
         chordType = data["chord_type"]
         console.log(chordType)
+        if (correct) {
+          document
+            .getElementById("user-answer")
+            .parentNode.parentNode.classList.add("bg-success")
+        } else {
+          document
+            .getElementById("user-answer")
+            .parentNode.parentNode.classList.add("bg-danger")
+        }
 
         if (document.getElementById("correct-answer").innerHTML != "") {
           let chordRoot = document
@@ -167,6 +177,12 @@
         document.getElementById("next").style.display = "none"
         document.getElementById("user-answer").innerHTML = ""
         document.getElementById("sound").removeAttribute("src")
+        document
+          .getElementById("user-answer")
+          .parentNode.parentNode.classList.remove("bg-success")
+        document
+          .getElementById("user-answer")
+          .parentNode.parentNode.classList.remove("bg-danger")
       }
       socket.on("answer_returned", function (data) {
         returnAnswer(data)
