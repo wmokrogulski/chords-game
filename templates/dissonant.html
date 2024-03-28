@@ -51,6 +51,7 @@
       let chordRootName = null
       let chordType = null
       let chordMode = null
+      const MAX_TRIES = 3
       function setChordType(el) {
         if (document.getElementById("user-answer").innerHTML != "") {
           let chordRoot = document
@@ -115,15 +116,18 @@
       function returnAnswer(data) {
         console.log(data)
         correct = data["correct"]
+        tries = data["tries"]
         chordRootName = data["chord_root"]
         console.log(chordRootName)
         chordType = data["chord_type"]
         console.log(chordType)
         if (correct) {
+          clearAnswerColor()
           document
             .getElementById("user-answer")
             .parentNode.parentNode.classList.add("bg-success")
         } else {
+          clearAnswerColor()
           document
             .getElementById("user-answer")
             .parentNode.parentNode.classList.add("bg-danger")
@@ -143,46 +147,54 @@
           document.getElementById("correct-answer").innerHTML =
             document.getElementById(chordType).innerHTML
         }
-
-        if (document.getElementById("correct-answer").innerHTML != "") {
-          const span = document
-            .getElementById("correct-answer")
-            .getElementsByClassName("chord")[0]
-          span.innerHTML =
-            document.getElementById(chordRootName).children[0].innerHTML
-        } else {
-          document.getElementById("correct-answer").innerHTML =
-            document.getElementById(chordRootName).innerHTML
+        if (!correct && tries >= MAX_TRIES) {
+          if (document.getElementById("correct-answer").innerHTML != "") {
+            const span = document
+              .getElementById("correct-answer")
+              .getElementsByClassName("chord")[0]
+            span.innerHTML =
+              document.getElementById(chordRootName).children[0].innerHTML
+          } else {
+            document.getElementById("correct-answer").innerHTML =
+              document.getElementById(chordRootName).innerHTML
+          }
+          console.log(chordMode)
+          if (chordMode == "min") {
+            const span = document
+              .getElementById("correct-answer")
+              .getElementsByClassName("chord")[0]
+            span.innerHTML =
+              span.innerHTML[0].toLowerCase() + span.innerHTML.slice(1)
+          } else {
+            const span = document
+              .getElementById("correct-answer")
+              .getElementsByClassName("chord")[0]
+            span.innerHTML =
+              span.innerHTML[0].toUpperCase() + span.innerHTML.slice(1)
+          }
+          document.getElementById("correct").style.display = "block"
         }
-        console.log(chordMode)
-        if (chordMode == "min") {
-          const span = document
-            .getElementById("correct-answer")
-            .getElementsByClassName("chord")[0]
-          span.innerHTML =
-            span.innerHTML[0].toLowerCase() + span.innerHTML.slice(1)
-        } else {
-          const span = document
-            .getElementById("correct-answer")
-            .getElementsByClassName("chord")[0]
-          span.innerHTML =
-            span.innerHTML[0].toUpperCase() + span.innerHTML.slice(1)
+        if (correct || tries >= MAX_TRIES) {
+          document.getElementById("next").style.display = "block"
+          document.getElementById("confirm").style.display = "none"
         }
-        document.getElementById("next").style.display = "block"
-        document.getElementById("correct").style.display = "block"
       }
-      function next() {
-        socket.emit("next")
-        document.getElementById("correct").style.display = "none"
-        document.getElementById("next").style.display = "none"
-        document.getElementById("user-answer").innerHTML = ""
-        document.getElementById("sound").removeAttribute("src")
+      function clearAnswerColor() {
         document
           .getElementById("user-answer")
           .parentNode.parentNode.classList.remove("bg-success")
         document
           .getElementById("user-answer")
           .parentNode.parentNode.classList.remove("bg-danger")
+      }
+      function next() {
+        socket.emit("next")
+        document.getElementById("sound").removeAttribute("src")
+        document.getElementById("correct").style.display = "none"
+        document.getElementById("next").style.display = "none"
+        document.getElementById("confirm").style.display = "block"
+        document.getElementById("user-answer").innerHTML = ""
+        clearAnswerColor()
       }
       socket.on("answer_returned", function (data) {
         returnAnswer(data)

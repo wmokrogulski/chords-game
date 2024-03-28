@@ -81,10 +81,13 @@ def handle_answer(data):
     if game=='dissonant':
         correct, root, chord_mode, chord_type = get_dissonant_answer(data, answer)
         if correct:
-            points+=1
+            if tries==0:
+                points+=1
+            else:
+                points+=0.5
         else:
             tries+=1
-        socketio.emit('answer_returned', {'correct': correct,  'chord_root': root, 'chord_mode':chord_mode,'chord_type': chord_type})
+        socketio.emit('answer_returned', {'correct': correct, 'tries': tries,  'chord_root': root, 'chord_mode':chord_mode,'chord_type': chord_type})
 
 
 if __name__ == '__main__':
