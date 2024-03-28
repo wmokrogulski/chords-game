@@ -106,6 +106,7 @@ def handle_answer(data):
                 points+=0.5
         else:
             tries+=1
+        logging.debug(f'SCORE: {points}/{current}')
         socketio.emit('answer_returned', {'correct': correct, 'tries': tries,  'chord_root': root, 'chord_mode':chord_mode,'chord_type': chord_type})
 
 
