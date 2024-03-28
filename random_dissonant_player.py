@@ -57,6 +57,8 @@ def get_dissonant_answer(data, answer):
     chord_mode=CHORD_MODES[CHORD_TYPES.index(chord_type)]
     if chord_type=='min7':
         chord_type='7'
+    if chord_type=='minmaj7':
+        chord_type='maj7'
     if chord_type in ('minmaj6'):
         chord_type='maj6'
     if chord_type=='majmin6':

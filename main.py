@@ -81,6 +81,19 @@ def handle_next():
     answer = None
     current += 1
     tries = 0
+    if current>DEFAULT_TOTAL:
+        result()
+
+def result():
+    global points
+    global current
+    global tries
+    message = 'Musisz jeszcze poćwiczyć.' if points<0.5*DEFAULT_TOTAL else 'Całkiem nieźle.' if points <=0.8*DEFAULT_TOTAL else 'Gratulacje!'
+    result_text=f'Udało Ci się zdobyć {points}/{DEFAULT_TOTAL} punktów. {message}'
+    current=1
+    points=0
+    tries=0
+    socketio.emit('result_returned', {'result_text':result_text})
 
 
 @socketio.on('answer')

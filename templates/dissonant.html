@@ -196,8 +196,17 @@
         document.getElementById("user-answer").innerHTML = ""
         clearAnswerColor()
       }
+      function returnResult(data) {
+        resultText = data["result_text"]
+        document.getElementById("game").style.display = "none"
+        document.getElementById("result").style.display = "block"
+        document.getElementById("resultText").innerHTML = resultText
+      }
       socket.on("answer_returned", function (data) {
         returnAnswer(data)
+      })
+      socket.on("result_returned", function (data) {
+        returnResult(data)
       })
       socket.on("play_returned", function (data) {
         document.getElementById("sound").src = data["audio_b64"]
@@ -223,8 +232,15 @@
         document.getElementById("playA440").onclick = function () {
           document.getElementById("A440").play()
         }
+        document.getElementById("nextGame").onclick = function () {
+          document.getElementById("game").style.display = "block"
+          document.getElementById("correct").style.display = "none"
+          document.getElementById("result").style.display = "none"
+          document.getElementById("next").style.display = "none"
+        }
         document.getElementById("next").onclick = next
         document.getElementById("correct").style.display = "none"
+        document.getElementById("result").style.display = "none"
         document.getElementById("next").style.display = "none"
       }
     </script>
@@ -234,147 +250,153 @@
       <div class="row">
         <div class="col">
           <h1>Rozpoznaj akord</h1>
-          <button class="btn btn-warning" id="play">Odtwórz</button>
-          <audio id="sound">
-            The audio tag is not supported by your browser.
-          </audio>
-          <button class="btn btn-warning" id="playA440">Odtwórz A440</button>
-          <audio id="A440" src="{{url_for('static',filename='A440.mp3')}}">
-            The audio tag is not supported by your browser.
-          </audio>
-          <h3>Wybierz prymę akordu</h3>
-          <div>
-            <button class="btn btn-primary chord-root" id="C">
-              <span class="chord">C</span>
-            </button>
-            <button class="btn btn-primary chord-root" id="C#">
-              <span class="chord">Cis</span>
-            </button>
-            <button class="btn btn-primary chord-root" id="D">
-              <span class="chord">D</span>
-            </button>
-            <button class="btn btn-primary chord-root" id="Eb">
-              <span class="chord">Es</span>
-            </button>
-            <button class="btn btn-primary chord-root" id="E">
-              <span class="chord">E</span>
-            </button>
-            <button class="btn btn-primary chord-root" id="F">
-              <span class="chord">F</span>
-            </button>
-            <button class="btn btn-primary chord-root" id="F#">
-              <span class="chord">Fis</span>
-            </button>
-            <button class="btn btn-primary chord-root" id="G">
-              <span class="chord">G</span>
-            </button>
-            <button class="btn btn-primary chord-root" id="Ab">
-              <span class="chord">As</span>
-            </button>
-            <button class="btn btn-primary chord-root" id="A">
-              <span class="chord">A</span>
-            </button>
-            <button class="btn btn-primary chord-root" id="Bb">
-              <span class="chord">B</span>
-            </button>
-            <button class="btn btn-primary chord-root" id="B">
-              <span class="chord">H</span>
-            </button>
-          </div>
-          <h3>Wybierz tryb akordu</h3>
-          <div>
-            <button class="btn btn-primary chord-mode" id="maj">
-              <span class="chord">dur</span>
-            </button>
-            <button class="btn btn-primary chord-mode" id="min">
-              <span class="chord">moll</span>
-            </button>
-          </div>
-          <h3>Wybierz rodzaj dysonansu:</h3>
-          <div>
-            <button class="btn btn-primary chord-type" id="7">
-              <table>
-                <tr>
-                  <td rowspan="2"><span class="chord"></span></td>
-                  <td>7</td>
-                </tr>
-                <tr>
-                  <td>&nbsp</td>
-                </tr>
-              </table>
-            </button>
-            <button class="btn btn-primary chord-type" id="maj7">
-              <table>
-                <tr>
-                  <td rowspan="2"><span class="chord"></span></td>
-                  <td>7&lt;</td>
-                </tr>
-                <tr>
-                  <td>&nbsp</td>
-                </tr>
-              </table>
-            </button>
-            <button class="btn btn-primary chord-type" id="maj6">
-              <table>
-                <tr>
-                  <td rowspan="2"><span class="chord"></span></td>
-                  <td>6</td>
-                </tr>
-                <tr>
-                  <td>&nbsp</td>
-                </tr>
-              </table>
-            </button>
-            <button class="btn btn-primary chord-type" id="min6">
-              <table>
-                <tr>
-                  <td rowspan="2"><span class="chord"></span></td>
-                  <td>6&gt;</td>
-                </tr>
-                <tr>
-                  <td>&nbsp</td>
-                </tr>
-              </table>
-            </button>
-            <button class="btn btn-primary chord-type" id="9no1">
-              <table>
-                <tr>
-                  <td rowspan="2"><span class="chord"></span></td>
-                  <td>9</td>
-                </tr>
-                <tr>
-                  <td><span class="strikethrough">1</span></td>
-                </tr>
-              </table>
-            </button>
-            <button class="btn btn-primary chord-type" id="min9no1">
-              <table>
-                <tr>
-                  <td rowspan="2"><span class="chord"></span></td>
-                  <td>9&gt;</td>
-                </tr>
-                <tr>
-                  <td><span class="strikethrough">1</span></td>
-                </tr>
-              </table>
-            </button>
-          </div>
-          <h3>Twoja odpowiedź:</h3>
-          <div class="card" style="width: 100px">
-            <div class="card-body">
-              <div id="user-answer"></div>
+          <div id="game">
+            <button class="btn btn-warning" id="play">Odtwórz</button>
+            <audio id="sound">
+              The audio tag is not supported by your browser.
+            </audio>
+            <button class="btn btn-warning" id="playA440">Odtwórz A440</button>
+            <audio id="A440" src="{{url_for('static',filename='A440.mp3')}}">
+              The audio tag is not supported by your browser.
+            </audio>
+            <h3>Wybierz prymę akordu</h3>
+            <div>
+              <button class="btn btn-primary chord-root" id="C">
+                <span class="chord">C</span>
+              </button>
+              <button class="btn btn-primary chord-root" id="C#">
+                <span class="chord">Cis</span>
+              </button>
+              <button class="btn btn-primary chord-root" id="D">
+                <span class="chord">D</span>
+              </button>
+              <button class="btn btn-primary chord-root" id="Eb">
+                <span class="chord">Es</span>
+              </button>
+              <button class="btn btn-primary chord-root" id="E">
+                <span class="chord">E</span>
+              </button>
+              <button class="btn btn-primary chord-root" id="F">
+                <span class="chord">F</span>
+              </button>
+              <button class="btn btn-primary chord-root" id="F#">
+                <span class="chord">Fis</span>
+              </button>
+              <button class="btn btn-primary chord-root" id="G">
+                <span class="chord">G</span>
+              </button>
+              <button class="btn btn-primary chord-root" id="Ab">
+                <span class="chord">As</span>
+              </button>
+              <button class="btn btn-primary chord-root" id="A">
+                <span class="chord">A</span>
+              </button>
+              <button class="btn btn-primary chord-root" id="Bb">
+                <span class="chord">B</span>
+              </button>
+              <button class="btn btn-primary chord-root" id="B">
+                <span class="chord">H</span>
+              </button>
             </div>
-          </div>
-          <button class="btn btn-success" id="confirm">Zatwierdź</button>
-          <div id="correct">
-            <h3>Prawidłowa odpowiedź:</h3>
+            <h3>Wybierz tryb akordu</h3>
+            <div>
+              <button class="btn btn-primary chord-mode" id="maj">
+                <span class="chord">dur</span>
+              </button>
+              <button class="btn btn-primary chord-mode" id="min">
+                <span class="chord">moll</span>
+              </button>
+            </div>
+            <h3>Wybierz rodzaj dysonansu:</h3>
+            <div>
+              <button class="btn btn-primary chord-type" id="7">
+                <table>
+                  <tr>
+                    <td rowspan="2"><span class="chord"></span></td>
+                    <td>7</td>
+                  </tr>
+                  <tr>
+                    <td>&nbsp</td>
+                  </tr>
+                </table>
+              </button>
+              <button class="btn btn-primary chord-type" id="maj7">
+                <table>
+                  <tr>
+                    <td rowspan="2"><span class="chord"></span></td>
+                    <td>7&lt;</td>
+                  </tr>
+                  <tr>
+                    <td>&nbsp</td>
+                  </tr>
+                </table>
+              </button>
+              <button class="btn btn-primary chord-type" id="maj6">
+                <table>
+                  <tr>
+                    <td rowspan="2"><span class="chord"></span></td>
+                    <td>6</td>
+                  </tr>
+                  <tr>
+                    <td>&nbsp</td>
+                  </tr>
+                </table>
+              </button>
+              <button class="btn btn-primary chord-type" id="min6">
+                <table>
+                  <tr>
+                    <td rowspan="2"><span class="chord"></span></td>
+                    <td>6&gt;</td>
+                  </tr>
+                  <tr>
+                    <td>&nbsp</td>
+                  </tr>
+                </table>
+              </button>
+              <button class="btn btn-primary chord-type" id="9no1">
+                <table>
+                  <tr>
+                    <td rowspan="2"><span class="chord"></span></td>
+                    <td>9</td>
+                  </tr>
+                  <tr>
+                    <td><span class="strikethrough">1</span></td>
+                  </tr>
+                </table>
+              </button>
+              <button class="btn btn-primary chord-type" id="min9no1">
+                <table>
+                  <tr>
+                    <td rowspan="2"><span class="chord"></span></td>
+                    <td>9&gt;</td>
+                  </tr>
+                  <tr>
+                    <td><span class="strikethrough">1</span></td>
+                  </tr>
+                </table>
+              </button>
+            </div>
+            <h3>Twoja odpowiedź:</h3>
             <div class="card" style="width: 100px">
               <div class="card-body">
-                <div id="correct-answer"></div>
+                <div id="user-answer"></div>
               </div>
             </div>
+            <button class="btn btn-success" id="confirm">Zatwierdź</button>
+            <div id="correct">
+              <h3>Prawidłowa odpowiedź:</h3>
+              <div class="card" style="width: 100px">
+                <div class="card-body">
+                  <div id="correct-answer"></div>
+                </div>
+              </div>
+            </div>
+            <button class="btn btn-success" id="next">Dalej</button>
           </div>
-          <button class="btn btn-success" id="next">Dalej</button>
+          <div id="result">
+            <h3 id="resultText"></h3>
+            <button class="btn btn-success" id="nextGame">Dalej</button>
+          </div>
         </div>
       </div>
     </div>
