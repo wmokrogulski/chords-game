@@ -1,5 +1,6 @@
 import musicpy
 from random import randint, choice, shuffle
+import logging
 
 dominant_names_dict = {'D7no1': 'D7-1', 'D9b': 'D9>', 'D9no1': 'D9-1',
               'D9bno1': 'D9>-1', 'D6': 'D76-5', 'D6b': 'D76>-5'}
@@ -95,7 +96,7 @@ def get_dominant_answer(data, answer):
     chord_type = rev_dom_names_dict.get(chord_type, chord_type)
     root = f'root{root}'
 
-    print(answer, user_answer)
+    logging.debug(f'{answer =}, {user_answer =}')
 
     correct = answer == user_answer
     return correct, chord_type, root 

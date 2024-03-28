@@ -1,5 +1,6 @@
 import musicpy
 from random import randint, choice
+import logging
 
 CHORD_TYPES=['7','maj7','min7', 'minmaj7','maj6','min6', 'majmin6', 'minmaj6', '9no1','min9no1']
 CHORD_MODES=['maj','maj','min','min','maj','min','maj', 'min', 'maj', 'maj']
@@ -33,7 +34,7 @@ def create_random_dissonant(root_note=None, chord_type=None):
     return chord, answer
 
 def get_dissonant_answer(data, answer):
-    print(data)
+    logging.debug(data)
     root=data["chordRootName"]
     chord_mode=data["chordMode"]
     chord_type=data["chordType"]
@@ -46,7 +47,7 @@ def get_dissonant_answer(data, answer):
     else:
         user_answer=f'{root}{chord_mode}{chord_type}'
 
-    print(answer, user_answer)
+    logging.debug(f'{answer =}, {user_answer =}')
 
     correct = answer == user_answer
     for ct in CHORD_TYPES:

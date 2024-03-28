@@ -4,6 +4,25 @@ from random_dominant_player import random_dominant, get_dominant_answer
 from random_dissonant_player import create_random_dissonant, get_dissonant_answer
 from sound_exporter import export_sound
 import musicpy
+import logging
+
+from logging.config import dictConfig
+
+dictConfig({
+    'version': 1,
+    'formatters': {'default': {
+        'format': '[%(asctime)s] %(levelname)s in %(module)s: %(message)s',
+    }},
+    'handlers': {'wsgi': {
+        'class': 'logging.StreamHandler',
+        'stream': 'ext://flask.logging.wsgi_errors_stream',
+        'formatter': 'default'
+    }},
+    'root': {
+        'level': 'DEBUG',
+        'handlers': ['wsgi']
+    }
+})
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
@@ -49,7 +68,7 @@ def handle_play():
             chord, answer = random_dominant()
         if game == 'dissonant':
             chord, answer = create_random_dissonant()
-    print(f'{answer = }')
+    logging.debug(f'{answer = }')
     audio_b64=export_sound(chord)
     socketio.emit('play_returned',{'audio_b64':audio_b64})
 
